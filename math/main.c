@@ -89,7 +89,7 @@ int save_db(int score)
         return -1;
     }
 }
-#elif
+#else
 int save_file(int score)
 {
 	FILE *fp = NULL;
@@ -188,7 +188,7 @@ int main()
 	connect_db();
 	save_db(score);
 	close_db();
-#elif
+#else
 	save_file(score);
 #endif
 
