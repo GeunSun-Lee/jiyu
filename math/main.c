@@ -7,7 +7,7 @@
 #include "db.h"
 
 #define ESC 27
-#define COUNT 5
+#define COUNT 20
 #define RESULT_TRUE 1
 #define RESULT_FALSE 0
 #define USE_DB 1
