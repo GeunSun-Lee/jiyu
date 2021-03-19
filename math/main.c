@@ -6,6 +6,7 @@
 
 #include "db.h"
 
+#define USER_NAME "JIYU"
 #define ESC 27
 #define COUNT 20
 #define RESULT_TRUE 1
@@ -60,7 +61,7 @@ int check_result(int op, int x, int y, int val)
 }
 
 #if USE_DB
-int save_db(int score)
+int save_db(sqlite3 *db, int score)
 {
 	char sql[512] = { 0, };
 
@@ -69,8 +70,10 @@ int save_db(int score)
 
 	int rc = 0;
 
-	//sqlite> insert into ScoreBoard(name, year, month, day, hour, min, score) values("jiyu", 2021, 3, 19, 11, 56, 80);
-
+	if (db == NULL) {
+		printf("[ERR] DB is NULL\n");
+		return -1;
+	}
 
 	snprintf(sql, sizeof(sql), "CREATE TABLE IF NOT EXISTS  %s\
 			(name TEXT,\
@@ -80,15 +83,17 @@ int save_db(int score)
 			 hour INTEGER,\
 			 min INTEGER,\
 			 score INTEGER);\
-			INSERT INTO %s(name, year, month, day, hour, min, score) VALUES('JIYU', %d, %02d, %02d, %02d, %02d, %d);", 
-			DB_TABLE_NAME, DB_TABLE_NAME, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, score * 5);
+			INSERT INTO %s(name, year, month, day, hour, min, score)\
+			VALUES('%s', %d, %02d, %02d, %02d, %02d, %d);",
+			DB_TABLE_NAME, DB_TABLE_NAME, USER_NAME, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, score * 5);
 
-    rc = exec_db(sql);
+    rc = exec_db(db, sql);
     if (rc == -1) {
         printf("[ERR] Failed to initialize a DB\n");
         return -1;
     }
 }
+
 #else
 int save_file(int score)
 {
@@ -185,13 +190,32 @@ int main()
 
 
 #if USE_DB
-	connect_db();
-	save_db(score);
-	close_db();
+	sqlite3 *db = NULL;
+
+	ret = connect_db(&db);
+	if (ret != 0) {
+		printf("[ERR] Failed to connect DB\n");
+		return -1;
+	}
+
+	ret = save_db(db, score);
+	if (ret != 0) {
+		printf("[ERR] Failed to save data\n");
+	}
+
+	ret = print_last_items(db, 5);
+	if (ret != 0) {
+		printf("[ERR] Failed to print last items\n");
+	}
+
+	ret = close_db(db);
+	if (ret != 0) {
+		printf("[ERR] Failed to close DB\n");
+		return -1;
+	}
 #else
 	save_file(score);
 #endif
-
 
 	return 0;
 }
