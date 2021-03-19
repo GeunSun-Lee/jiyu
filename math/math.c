@@ -62,7 +62,7 @@ int save_file(int score)
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
 
-	fp = fopen("score.txt", "at");
+	fp = fopen("score.txt", "a+");
 	if (fp == NULL) {
 		printf("[ERR] Failed to open a file\n");
 		return -1;
