@@ -45,7 +45,7 @@ int connect_db(sqlite3 **db)
 		close_db(*db);
 	}
 
-	rc = sqlite3_open(DB_FILE_NAME, &(*db));
+	rc = sqlite3_open(DB_FILE, &(*db));
 
 	if (rc != SQLITE_OK) {
 		printf("[ERR] Failed to open a DB: %s\n", sqlite3_errmsg(*db));
