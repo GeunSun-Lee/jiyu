@@ -64,6 +64,7 @@ int check_result(int op, int x, int y, int val)
 int save_db(sqlite3 *db, int score)
 {
 	char sql[512] = { 0, };
+	char date[128] = { 0, };
 
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
@@ -75,17 +76,15 @@ int save_db(sqlite3 *db, int score)
 		return -1;
 	}
 
+	snprintf(date, sizeof(date), "%d.%02d.%02d %02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min);
+
 	snprintf(sql, sizeof(sql), "CREATE TABLE IF NOT EXISTS  %s\
 			(name TEXT,\
-			 year INTEGER,\
-			 month INTEGER,\
-			 day INTEGER,\
-			 hour INTEGER,\
-			 min INTEGER,\
+			 date TEXT,\
 			 score INTEGER);\
-			INSERT INTO %s(name, year, month, day, hour, min, score)\
-			VALUES('%s', %d, %02d, %02d, %02d, %02d, %d);",
-			DB_TABLE_NAME, DB_TABLE_NAME, USER_NAME, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, score * 5);
+			INSERT INTO %s(name, date, score)\
+			VALUES('%s', '%s', %d);",
+			DB_TABLE_NAME, DB_TABLE_NAME, USER_NAME, date, score * 5);
 
     rc = exec_db(db, sql);
     if (rc == -1) {
