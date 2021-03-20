@@ -14,7 +14,7 @@ static int _print_cb(void *NU, int argc, char **argv, char **azColName)
 		}
 
 		if (strncmp(azColName[i], "date", strlen(azColName[i])) == 0) {
-			printf("[%s]", argv[i]);
+			printf("|%s|", argv[i]);
 		}
 
 		if (strncmp(azColName[i], "score", strlen(azColName[i])) == 0) {
@@ -23,13 +23,13 @@ static int _print_cb(void *NU, int argc, char **argv, char **azColName)
 
 			printf("[");
 			for (j = 0; j < score; j++) {
-				printf("+");
+				printf("■ ");
 			}
 
 			for (j = 0; j < 20 - score; j++) {
-				printf("-");
+				printf("□ ");
 			}
-			printf("]: %3d\n", score * 5);
+			printf("]|%3d|\n", score * 5);
 		}
 	}
 
@@ -108,9 +108,9 @@ int print_last_items(sqlite3 *db, int count)
 
 	int rc = 0;
 
-	printf(" ============================================ \n");
-	printf(" \t\tHISTORY\n");
-	printf(" ============================================ \n");
+	printf(" ================================================================ \n");
+	printf(" \t\t\t\tHISTORY\n");
+	printf(" ================================================================ \n");
 
 	snprintf(sql, sizeof(sql), "SELECT * FROM %s\
 			ORDER BY ROWID LIMIT %d;",
