@@ -113,7 +113,7 @@ int print_last_items(sqlite3 *db, int count)
 	printf(" ================================================================ \n");
 
 	snprintf(sql, sizeof(sql), "SELECT * FROM %s\
-			ORDER BY ROWID LIMIT %d;",
+			ORDER BY ROWID DESC LIMIT %d;",
 			DB_TABLE_NAME, count);
 
 	rc = sqlite3_exec(db, sql, _print_cb, NULL, &err_msg);
