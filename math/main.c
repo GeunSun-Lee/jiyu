@@ -1,24 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
+#include "main.h"
 #include "db.h"
-
-#define USER_NAME "JIYU"
-#define ESC 27
-#define COUNT 20
-#define RESULT_TRUE 1
-#define RESULT_FALSE 0
-#define USE_DB 1
-
-typedef enum OP_TYPE {
-	OP_TYPE_PLUS = 0,
-	OP_TYPE_MINUS,
-	OP_TYPE_MULTIPLE,
-	OP_TYPE_MAX,
-} OP_TYPE;
 
 int print_result(int result)
 {
