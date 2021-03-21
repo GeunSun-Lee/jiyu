@@ -94,7 +94,7 @@ int exec_db(sqlite3 *db, char *sql)
 
 	rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
 	if (rc != SQLITE_OK) {
-		printf("[ERR] Failed to execute SQL: %s\n", sqlite3_errmsg(db));
+		printf("[ERR] Failed to execute SQL: %s\n", err_msg);
 	}
 
 	free(err_msg);
@@ -118,10 +118,10 @@ int print_last_items(sqlite3 *db, int count)
 			DB_TABLE_NAME, count);
 
 	rc = sqlite3_exec(db, sql, _print_cb, NULL, &err_msg);
-	if (rc == -1) {
-		printf("[ERR] Failed to execute SQL: %s\n", sqlite3_errmsg(db));
-		return -1;
+	if (rc != SQLITE_OK) {
+		printf("[ERR] Failed to execute SQL: %s\n", err_msg);
 	}
+	free(err_msg);
 
 	return 0;
 }
