@@ -5,12 +5,11 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define USER_NAME "JIYU"
+#include "config.h"
+
 #define ESC 27
-#define COUNT 20
 #define RESULT_TRUE 1
 #define RESULT_FALSE 0
-#define USE_DB 1
 
 typedef enum OP_TYPE {
 	OP_TYPE_PLUS = 0,

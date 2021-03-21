@@ -3,7 +3,8 @@
 
 #include <sqlite3.h>
 
-#define DB_FILE "/home/lgs//Documents/score.db"
+#include "config.h"
+
 #define DB_TABLE_NAME "MATH"
 
 int connect_db(sqlite3 **db);
