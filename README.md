@@ -2,7 +2,7 @@
 This repository is for JIYU
 
 ## Math
-This project uses SQLITE3.
+This project uses SQLite3.
 
 * How to install a prerequisite package:
 
