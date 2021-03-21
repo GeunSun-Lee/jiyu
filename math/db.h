@@ -4,7 +4,7 @@
 #include <sqlite3.h>
 
 #define DB_FILE "/home/lgs//Documents/score.db"
-#define DB_TABLE_NAME "ScoreBoard"
+#define DB_TABLE_NAME "MATH"
 
 int connect_db(sqlite3 **db);
 int close_db(sqlite3 *db);
