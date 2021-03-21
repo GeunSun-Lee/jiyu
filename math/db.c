@@ -8,7 +8,8 @@ static int _print_cb(void *NU, int argc, char **argv, char **azColName)
 {
 	int i = 0;
 	for (i = 0; i < argc; i++) {
-		//printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : NULL);
+		if (azColName[i] == NULL) continue;
+
 		if (strncmp(azColName[i], "name", strlen(azColName[i])) == 0) {
 			continue;
 		}
@@ -26,7 +27,7 @@ static int _print_cb(void *NU, int argc, char **argv, char **azColName)
 				printf("■ ");
 			}
 
-			for (j = 0; j < 20 - score; j++) {
+			for (j = 0; j < COUNT - score; j++) {
 				printf("□ ");
 			}
 			printf("]|%3d|\n", score * 5);
