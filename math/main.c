@@ -24,21 +24,20 @@ int check_result(int op, int x, int y, int val)
 
 	switch (op) {
 	case OP_TYPE_PLUS:
-		result = ((x + y) == val) ? RESULT_TRUE : RESULT_FALSE;
-		print_result(result);
+		result = x + y;
 		break;
 	case OP_TYPE_MINUS:
-		result = ((x - y) == val) ? RESULT_TRUE : RESULT_FALSE;
-		print_result(result);
+		result = x - y;
 		break;
 	case OP_TYPE_MULTIPLE:
-		result = ((x * y) == val) ? RESULT_TRUE : RESULT_FALSE;
-		print_result(result);
+		result = x * y;
 		break;
 	defult:
 		printf("[ERR] type error: %d\n", op);
 		return -1;
 	}
+
+	print_result((result == val) ? RESULT_TRUE : RESULT_FALSE);
 
 	return result;
 }
@@ -74,6 +73,8 @@ int save_db(sqlite3 *db, int score)
         printf("[ERR] Failed to initialize a DB\n");
         return -1;
     }
+
+    return 0;
 }
 
 #else
