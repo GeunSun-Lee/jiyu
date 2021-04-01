@@ -8,8 +8,8 @@
 #include "config.h"
 
 #define ESC 27
-#define RESULT_TRUE 1
-#define RESULT_FALSE 0
+#define RESULT_TRUE 0
+#define RESULT_FALSE -1
 
 typedef enum OP_TYPE {
 	OP_TYPE_PLUS = 0,

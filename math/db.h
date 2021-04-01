@@ -5,8 +5,6 @@
 
 #include "config.h"
 
-#define DB_TABLE_NAME "MATH"
-
 int connect_db(sqlite3 **db);
 int close_db(sqlite3 *db);
 int exec_db(sqlite3 *db, char *sql);

@@ -5,7 +5,7 @@
 
 int print_result(int result)
 {
-	if (result) {
+	if (result == RESULT_TRUE) {
 		printf("%c[1;32m", ESC);
 		printf("  [ O ] Correct");
 		printf("%c[0m\n", ESC);
@@ -20,24 +20,26 @@ int print_result(int result)
 
 int check_result(int op, int x, int y, int val)
 {
+	int answer = 0;
 	int result = 0;
 
 	switch (op) {
 	case OP_TYPE_PLUS:
-		result = x + y;
+		answer = x + y;
 		break;
 	case OP_TYPE_MINUS:
-		result = x - y;
+		answer = x - y;
 		break;
 	case OP_TYPE_MULTIPLE:
-		result = x * y;
+		answer = x * y;
 		break;
 	defult:
 		printf("[ERR] type error: %d\n", op);
 		return -1;
 	}
 
-	print_result((result == val) ? RESULT_TRUE : RESULT_FALSE);
+	result = (answer == val) ? RESULT_TRUE : RESULT_FALSE;
+	print_result(result);
 
 	return result;
 }
@@ -125,7 +127,7 @@ int main()
 			scanf("%d", &val);
 
 			ret = check_result(op, x, y, val);
-			if (ret)
+			if (ret == RESULT_TRUE)
 				score++;
 			break;
 		case OP_TYPE_MINUS:
@@ -142,7 +144,7 @@ int main()
 			scanf("%d", &val);
 
 			ret = check_result(op, x, y, val);
-			if (ret)
+			if (ret == RESULT_TRUE)
 				score++;
 			break;
 		case OP_TYPE_MULTIPLE:
@@ -156,7 +158,7 @@ int main()
 			scanf("%d", &val);
 
 			ret = check_result(op, x, y, val);
-			if (ret) 
+			if (ret == RESULT_TRUE)
 				score++;
 			break;
 		default:
