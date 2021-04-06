@@ -40,42 +40,7 @@ int check_result(int op, int x, int y, int val)
 	return print_result((answer == val) ? RESULT_TRUE : RESULT_FALSE);
 }
 
-#if USE_DB
-int save_db(sqlite3 *db, int score)
-{
-	char sql[512] = { 0, };
-	char date[128] = { 0, };
-
-	time_t t = time(NULL);
-	struct tm tm = *localtime(&t);
-
-	int rc = 0;
-
-	if (db == NULL) {
-		printf("[ERR] DB is NULL\n");
-		return -1;
-	}
-
-	snprintf(date, sizeof(date), "%d.%02d.%02d %02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min);
-
-	snprintf(sql, sizeof(sql), "CREATE TABLE IF NOT EXISTS  %s\
-			(name TEXT,\
-			 date TEXT,\
-			 score INTEGER);\
-			INSERT INTO %s(name, date, score)\
-			VALUES('%s', '%s', %d);",
-			DB_TABLE_NAME, DB_TABLE_NAME, USER_NAME, date, score * 5);
-
-    rc = exec_db(db, sql);
-    if (rc == -1) {
-        printf("[ERR] Failed to initialize a DB\n");
-        return -1;
-    }
-
-    return 0;
-}
-
-#else
+#if !USE_DB
 int save_file(int score)
 {
 	FILE *fp = NULL;
@@ -171,7 +136,14 @@ int main()
 
 
 #if USE_DB
+	char date[128] = { 0, };
+
+	time_t t = time(NULL);
+	struct tm tm = *localtime(&t);
+
 	sqlite3 *db = NULL;
+
+	snprintf(date, sizeof(date), "%d.%02d.%02d %02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min);
 
 	ret = connect_db(&db);
 	if (ret != 0) {
@@ -179,7 +151,7 @@ int main()
 		return -1;
 	}
 
-	ret = save_db(db, score);
+	ret = save_db(db, score, date);
 	if (ret != 0) {
 		printf("[ERR] Failed to save data\n");
 	}

@@ -104,6 +104,39 @@ int exec_db(sqlite3 *db, char *sql)
 	return 0;
 }
 
+int save_db(sqlite3 *db, int score, char *date)
+{
+	char sql[512] = { 0, };
+	int ret = 0, rc = 0;
+
+    if (db == NULL) {
+        printf("[ERR] DB is NULL\n");
+        return -1;
+    }
+
+    if (date == NULL) {
+        printf("[ERR] date is NULL\n");
+        return -1;
+    }
+
+	snprintf(sql, sizeof(sql), "CREATE TABLE IF NOT EXISTS  %s\
+			(id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
+             name TEXT,\
+			 date TEXT NOT NULL,\
+			 score INTEGER NOT NULL);\
+			INSERT INTO %s(name, date, score)\
+			VALUES('%s', '%s', %d);",
+			DB_TABLE_NAME, DB_TABLE_NAME, USER_NAME, date, score * 5);
+
+    rc = exec_db(db, sql);
+    if (rc == -1) {
+        printf("[ERR] Failed to initialize a DB\n");
+        return -1;
+    }
+
+    return 0;
+}
+
 int print_last_items(sqlite3 *db, int count)
 {
 	char sql[512] = { 0, };
