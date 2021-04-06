@@ -21,7 +21,6 @@ int print_result(int result)
 int check_result(int op, int x, int y, int val)
 {
 	int answer = 0;
-	int result = 0;
 
 	switch (op) {
 	case OP_TYPE_PLUS:
@@ -38,10 +37,7 @@ int check_result(int op, int x, int y, int val)
 		return -1;
 	}
 
-	result = (answer == val) ? RESULT_TRUE : RESULT_FALSE;
-	print_result(result);
-
-	return result;
+	return print_result((answer == val) ? RESULT_TRUE : RESULT_FALSE);
 }
 
 #if USE_DB
@@ -109,7 +105,7 @@ int main()
 	srand((unsigned int) time(NULL));
 
 	printf("=======================================\n");
-	printf(" JIYU's\n");
+	printf(" %s's\n", USER_NAME);
 	printf("\tThe First Math Program\n");
 	printf("=======================================\n");
 
