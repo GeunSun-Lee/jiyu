@@ -1,7 +1,30 @@
 #!/bin/bash
 
 USER_NAME="JIYU"
+DB_FILE="./bookManager.db"
+DB_TABLE="BookManager"
 INPUT=/tmp/menu.sh.$$
+
+insert_db() {
+	sqlite3 ${DB_FILE} "CREATE TABLE IF NOT EXISTS ${DB_TABLE} \
+		(id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
+		 title TEXT, \
+		 author TEXT, \
+		 publisher TEXT, \
+		 date TEXT); \
+		 INSERT INTO ${DB_TABLE}(title, author, publisher, date) \
+		 VALUES ('$1', '$2', '$3', '$4');"
+}
+
+delete_db() {
+	sqlite3 ${DB_FILE} "DELETE FROM ${DB_TABLE} \
+						WHERE title=$0;"
+}
+
+select_db() {
+	book_list=`sqlite3 ${DB_FILE} "SELECT * FROM ${DB_TABLE};"`
+	echo ${book_list}
+}
 
 show_intro() {
 	dialog --backtitle "The Book Manager" \
@@ -14,19 +37,15 @@ show_list() {
 }
 
 show_regist() {
-	title=""
-	author=""
-	publisher=""
-	read_date=""
-
-	dialog --ok-label "Regist" \
-		--backtitle "The Book Manager" \
+	info=$(dialog --stdout --backtitle "The Book Manager" \
 		--title "Regist a new book" \
 		--form "Create a new book information" 15 50 0\
-		"Title:"	1 1 "$title"		1 15 25 0 \
-		"Author:"	2 1 "$author"		2 15 25 0 \
-		"Publisher:"	3 1 "$publisher"	3 15 25 0 \
-		"Date:"		4 1 "$read_date"	4 15 12 0
+		"Title:"		1 1 ''	1 15 25 0 \
+		"Author:"		2 1 ''	2 15 25 0 \
+		"Publisher:"	3 1 ''	3 15 25 0 \
+		"Date:"			4 1 ''	4 15 12 0)
+
+	insert_db ${info[0]} ${info[1]} ${info[2]} ${info[3]}
 }
 
 show_intro ${USER_NAME}
@@ -59,16 +78,3 @@ done
 [ -f $INPUT ] && rm ${INPUT}
 
 clear
-
-
-
-
-
-
-
-
-
-
-
-
-
