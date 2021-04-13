@@ -37,6 +37,33 @@ static int _print_cb(void *NU, int argc, char **argv, char **azColName)
 	return 0;
 }
 
+static int _exec_query(sqlite3 *db, char *sql)
+{
+	char *err_msg = NULL;
+	int rc = 0;
+
+	if (db == NULL) {
+		printf("[ERR] DB is NULL\n");
+		return -1;
+	}
+
+	if (sql == NULL) {
+		printf("[ERR] sql is NULL\n");
+		return -1;
+	}
+
+	rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
+	if (rc != SQLITE_OK) {
+		printf("[ERR] Failed to execute SQL: %s\n", err_msg);
+		free(err_msg);
+		return -1;
+	}
+
+	free(err_msg);
+
+	return 0;
+}
+
 int connect_db(sqlite3 **db)
 {
 	int rc = 0;
@@ -76,35 +103,7 @@ int close_db(sqlite3 *db)
 	return 0;
 }
 
-
-int exec_db(sqlite3 *db, char *sql)
-{
-	char *err_msg = NULL;
-	int rc = 0;
-
-	if (db == NULL) {
-		printf("[ERR] DB is NULL\n");
-		return -1;
-	}
-
-	if (sql == NULL) {
-		printf("[ERR] sql is NULL\n");
-		return -1;
-	}
-
-	rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
-	if (rc != SQLITE_OK) {
-		printf("[ERR] Failed to execute SQL: %s\n", err_msg);
-		free(err_msg);
-		return -1;
-	}
-
-	free(err_msg);
-
-	return 0;
-}
-
-int save_db(sqlite3 *db, int score, char *date)
+int insert_db(sqlite3 *db, int score, char *date)
 {
 	char sql[512] = { 0, };
 	int ret = 0, rc = 0;
@@ -128,7 +127,7 @@ int save_db(sqlite3 *db, int score, char *date)
 			VALUES('%s', '%s', %d);",
 			DB_TABLE_NAME, DB_TABLE_NAME, USER_NAME, date, score * 5);
 
-    rc = exec_db(db, sql);
+    rc = _exec_query(db, sql);
     if (rc == -1) {
         printf("[ERR] Failed to initialize a DB\n");
         return -1;

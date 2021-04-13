@@ -40,9 +40,41 @@ int check_result(int op, int x, int y, int val)
 	return print_result((answer == val) ? RESULT_TRUE : RESULT_FALSE);
 }
 
-#if !USE_DB
-int save_file(int score)
+int save_data(int score)
 {
+#if USE_DB
+	char date[128] = { 0, };
+	int ret = 0;
+
+	time_t t = time(NULL);
+	struct tm tm = *localtime(&t);
+
+	sqlite3 *db = NULL;
+
+	snprintf(date, sizeof(date), "%d.%02d.%02d %02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min);
+
+	ret = connect_db(&db);
+	if (ret != 0) {
+		printf("[ERR] Failed to connect DB\n");
+		return -1;
+	}
+
+	ret = insert_db(db, score, date);
+	if (ret != 0) {
+		printf("[ERR] Failed to save data\n");
+	}
+
+	ret = print_last_items(db, 5);
+	if (ret != 0) {
+		printf("[ERR] Failed to print last items\n");
+	}
+
+	ret = close_db(db);
+	if (ret != 0) {
+		printf("[ERR] Failed to close DB\n");
+		return -1;
+	}
+#else
 	FILE *fp = NULL;
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
@@ -54,11 +86,12 @@ int save_file(int score)
 	}
 
 	fprintf(fp, "%d.%02d.%02d %02d:%02d\tScore: %d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, score * 5);
+
 	fclose(fp);
+#endif
 
 	return 0;
 }
-#endif
 
 int main() 
 {
@@ -134,41 +167,10 @@ int main()
 	printf(" \tTotal Score: [ %c[1;31m %d %c[0m ]\n", ESC, score * 5, ESC);
 	printf(" ==================================\n");
 
-
-#if USE_DB
-	char date[128] = { 0, };
-
-	time_t t = time(NULL);
-	struct tm tm = *localtime(&t);
-
-	sqlite3 *db = NULL;
-
-	snprintf(date, sizeof(date), "%d.%02d.%02d %02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min);
-
-	ret = connect_db(&db);
-	if (ret != 0) {
-		printf("[ERR] Failed to connect DB\n");
-		return -1;
-	}
-
-	ret = save_db(db, score, date);
+	ret = save_data(score);
 	if (ret != 0) {
 		printf("[ERR] Failed to save data\n");
 	}
-
-	ret = print_last_items(db, 5);
-	if (ret != 0) {
-		printf("[ERR] Failed to print last items\n");
-	}
-
-	ret = close_db(db);
-	if (ret != 0) {
-		printf("[ERR] Failed to close DB\n");
-		return -1;
-	}
-#else
-	save_file(score);
-#endif
 
 	return 0;
 }
